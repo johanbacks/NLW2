@@ -1,8 +1,11 @@
 import express from 'express';
 
 const app =  express();
-app.get('/users',(request,response) => {
-  return response.send("teste")
+
+app.use(express.json());
+
+app.get('/',(request,response) => {
+  return response.json({message: "Hello"})
 })
 
 app.listen(3030);
