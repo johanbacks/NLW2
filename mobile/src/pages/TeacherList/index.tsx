@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View , ScrollView,Text ,TextInput} from 'react-native';
 import { BorderlessButton, RectButton } from 'react-native-gesture-handler';
 import api from '../../services/api';
@@ -8,6 +8,7 @@ import PageHeader from '../../components/PageHeader';
 import TeacherItem,{Teacher} from '../../components/TeacherItem';
 
 import styles from './styles';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 
@@ -20,7 +21,7 @@ function TeacherList() {
   const [ week_day , setWeekDay ] = useState('')
   const [ time , setTime ] = useState('')
 
-  useEffect(() => {
+  function loadFavorites() {
     AsyncStorage.getItem('favorites').then(response => {
       if (response) {
         const favoritedTeachers = JSON.parse(response);
@@ -30,13 +31,17 @@ function TeacherList() {
         setFavarites(favoritedTeacherIds)
       }
     });
-   } , [])
+  }
+  useFocusEffect(() => {
+    loadFavorites();
+  })
 
   function handleToggleFiltersVisible() {
     setFilterVisible(!isFiltersVisible);
   }
 
   async function handleFiltersSubmit() {
+    loadFavorites()
   const response = await api.get('classes', {
     params: {
       subject,
